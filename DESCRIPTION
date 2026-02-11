@@ -1,0 +1,27 @@
+Package: preText2
+Title: Diagnostics to Assess the Effects of Text Preprocessing Decisions
+Version: 0.7.0
+Authors@R: c(
+    person("Matthew J.", "Denny", email = "mdenny@psu.edu", role = c("aut")),
+    person("Arthur", "Spirling", email = "as9934@nyu.edu", role = c("aut", "cre")))
+Description: Functions to assess the effects of different text preprocessing
+    decisions on the inferences drawn from the resulting document-term matrices
+    they generate. This is an updated fork of the original preText package
+    (Denny and Spirling, 2018, <doi:10.1017/pan.2017.44>) that is compatible
+    with quanteda v4+.
+License: GPL-3
+Depends:
+    R (>= 3.5.0)
+Imports:
+    quanteda (>= 4.0),
+    Matrix,
+    ggplot2,
+    parallel
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.0
+VignetteBuilder: knitr
