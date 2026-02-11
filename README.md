@@ -44,6 +44,11 @@ preText_score_plot(results)
 regression_coefficient_plot(results, remove_intercept = TRUE)
 ```
 
+## Vignette
+
+There is a vignette for getting started [here](https://github.com/ArthurSpirling/preText2/blob/main/vignettes/getting_started_with_preText2.html)
+
+
 ## What changed from the original preText?
 
 - Rewrote `factorial_preprocessing()` to use the modern quanteda `tokens() |> dfm()` pipeline (the old `dfm(corpus, stem=TRUE, ...)` API was removed in quanteda v4).
