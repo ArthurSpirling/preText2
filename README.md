@@ -4,6 +4,8 @@ An updated R package to assess the consequences of text preprocessing decisions,
 
 This is a maintained fork of the original [preText](https://github.com/matthewjdenny/preText) package by Matthew J. Denny and Arthur Spirling. The original was archived from CRAN in 2020 due to breaking changes in quanteda v2+.
 
+(note from Arthur Spirling: I vibe-coded everything here, as a proof of concept in Feb 2026. It worked better than expected. I am unrepetant.)
+
 ## Paper
 
 Matthew J. Denny, and Arthur Spirling (2018). "Text Preprocessing For Unsupervised Learning: Why It Matters, When It Misleads, And What To Do About It". *Political Analysis*, 26(2), 168-189. [[doi:10.1017/pan.2017.44]](https://doi.org/10.1017/pan.2017.44)
