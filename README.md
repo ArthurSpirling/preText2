@@ -2,7 +2,7 @@
 
 An updated R package to assess the consequences of text preprocessing decisions, compatible with **quanteda v4+**.
 
-This is a maintained fork of the original [preText](https://github.com/matthewjdenny/preText) package by Matthew J. Denny and Arthur Spirling. The original was archived from CRAN in 2020 due to breaking changes in quanteda v2+.
+This is a (semi) maintained fork of the original [preText](https://github.com/matthewjdenny/preText) package by Matthew J. Denny and Arthur Spirling. The original was archived from CRAN in 2020 due to breaking changes in quanteda v2+.
 
 (note from Arthur Spirling: I vibe-coded everything here, as a proof of concept in Feb 2026. It worked better than expected. I am unrepetant.)
 
