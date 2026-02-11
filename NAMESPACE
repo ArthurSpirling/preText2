@@ -15,7 +15,7 @@ import(ggplot2)
 
 importFrom(quanteda, corpus, is.corpus, ndoc, nfeat, dfm, dfm_trim,
            tokens, tokens_tolower, tokens_remove, tokens_wordstem,
-           tokens_ngrams, stopwords, corpus_subset, data_corpus_inaugural)
+           tokens_ngrams, stopwords, corpus_subset)
 importFrom(Matrix, rowSums, colSums, t)
 importFrom(parallel, makeCluster, clusterApplyLB, stopCluster)
 importFrom(stats, sd, lm, coef, confint, as.formula, reorder, dist)
