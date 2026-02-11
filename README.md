@@ -46,7 +46,7 @@ regression_coefficient_plot(results, remove_intercept = TRUE)
 
 ## Vignette
 
-There is a vignette for getting started [here](https://github.com/ArthurSpirling/preText2/blob/main/vignettes/getting_started_with_preText2.html)
+There is a vignette for getting started [here](vignettes/getting_started_with_preText2.md)
 
 
 ## What changed from the original preText?
