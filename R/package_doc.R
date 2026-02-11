@@ -24,14 +24,3 @@
 "_PACKAGE"
 
 
-#' Full text of 69 UK party manifestos from 1918-2001.
-#'
-#' A character vector containing 69 entries, one per document, for all
-#' major party manifestos in the UK from 1918 to 2001.
-#'
-#' @docType data
-#' @keywords datasets
-#' @name UK_Manifestos
-#' @usage data(UK_Manifestos)
-#' @format A character vector of length 69.
-NULL

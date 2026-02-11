@@ -7,23 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval = FALSE)
-```
-
 ## Introduction
 
-This vignette introduces the **preText2** R package, an updated fork of the
-original **preText** package that is compatible with **quanteda v4+**. The
-package is built on top of the [quanteda](https://quanteda.io) R package for
-text processing.
-
-The main functions will preprocess the input text 64-128 different ways,
-and then allow the user to assess how robust findings based on their
-theoretically preferred preprocessing specification are likely to be, using
-the preText procedure.
-
-Our paper detailing the preText procedure can be found at the link below:
+**preText2** is an updated fork of the original **preText** package, compatible
+with **quanteda v4+**. It preprocesses text 64-128 different ways and assesses
+how robust your findings are to preprocessing choices.
 
 * Matthew J. Denny, and Arthur Spirling (2018). "Text Preprocessing For
   Unsupervised Learning: Why It Matters, When It Misleads, And What To Do
@@ -31,94 +19,80 @@ Our paper detailing the preText procedure can be found at the link below:
   [doi:10.1017/pan.2017.44](https://doi.org/10.1017/pan.2017.44)
 
 ## Installation
-
-Install from GitHub:
-
-```{r}
+```{r eval=FALSE}
 devtools::install_github("ArthurSpirling/preText2")
 ```
 
-## Example
+## Example: Inaugural Speeches
 
-We begin by loading the package and some example data from quanteda:
-
-```{r}
+`data_corpus_inaugural` ships with quanteda — no extra packages needed.
+```{r eval=FALSE}
 library(preText2)
 library(quanteda)
 
-# Load U.S. presidential inaugural speeches from quanteda
 corp <- data_corpus_inaugural
+documents <- as.character(corpus_subset(corp, Year > 1980))
 
-# Use documents from 1980 onward for a quick example
-documents <- corpus_subset(corp, Year > 1980)
-
-# Extract text as character vector
-doc_texts <- as.character(documents)
-
-# Take a look at the document names
-print(names(doc_texts))
-```
-
-Now we preprocess the documents 64 different ways (without n-grams, for speed):
-
-```{r}
 preprocessed_documents <- factorial_preprocessing(
-    doc_texts,
+    documents,
     use_ngrams = FALSE,
     infrequent_term_threshold = 0.02,
-    verbose = FALSE)
+    verbose = TRUE)
 
-names(preprocessed_documents)
-head(preprocessed_documents$choices)
-```
-
-Now we run the full preText procedure:
-
-```{r}
 preText_results <- preText(
     preprocessed_documents,
     dataset_name = "Inaugural Speeches",
     distance_method = "cosine",
     num_comparisons = 20,
     verbose = FALSE)
-```
 
-We can visualise the preText scores:
-
-```{r fig.width=7, fig.height=8}
 preText_score_plot(preText_results)
+regression_coefficient_plot(preText_results, remove_intercept = TRUE)
 ```
 
-And examine which preprocessing decisions matter most via a regression:
+## Example: UK Manifestos
 
-```{r fig.width=7, fig.height=5}
+The UK manifestos data is available from the `quanteda.corpora` package:
+```{r eval=FALSE}
+# install.packages("devtools")
+# devtools::install_github("quanteda/quanteda.corpora")
+library(quanteda.corpora)
+
+docs <- as.character(data_corpus_ukmanifestos)
+
+preprocessed_documents <- factorial_preprocessing(
+    docs,
+    use_ngrams = FALSE,
+    infrequent_term_threshold = 0.02,
+    verbose = TRUE)
+
+preText_results <- preText(
+    preprocessed_documents,
+    dataset_name = "UK Manifestos",
+    num_comparisons = 50)
+
+preText_score_plot(preText_results)
 regression_coefficient_plot(preText_results, remove_intercept = TRUE)
 ```
 
 ## Interpretation
 
-The preText score plot shows each preprocessing specification ordered from
-most to least "unusual" (in terms of how different the resulting
-document distances are from a baseline). Specifications with higher scores
-produce results that differ more from the consensus.
+The **preText score plot** shows each preprocessing specification ordered from
+most to least "unusual". Higher scores mean that specification produces results
+that differ more from the consensus.
 
-The regression coefficient plot shows which individual preprocessing decisions
-(e.g., removing stopwords, stemming) have the largest effects on the preText
-score. Steps with coefficients far from zero are the ones that "matter most"
-for your corpus.
+The **regression coefficient plot** shows which individual preprocessing decisions
+have the largest effects. Steps with coefficients far from zero are the ones
+that matter most for your corpus.
 
-Our general advice: begin by selecting a preprocessing specification motivated
-by theory, then for those steps with significant parameter estimates, replicate
-your analysis across combinations of those steps.
+Our general advice: select a preprocessing specification motivated by theory,
+then for steps with significant coefficients, replicate your analysis across
+combinations of those steps.
 
 ## Changes from preText
 
-**preText2** updates the original package for compatibility with quanteda v4+:
-
-- Uses the modern `tokens() |> dfm()` pipeline instead of passing preprocessing
-  arguments directly to `dfm()` (which was removed in quanteda v4).
-- Fixes the corpus subsetting bug (`corp[1:10,]` to `head(corp, 10)`).
-- Fixes the `is.character()` parenthesis bug in `factorial_preprocessing()`.
-- Replaces internal corpus accessor (`text$documents$texts`) with `ndoc()`.
-- `wordfish_comparison()` now requires the separate `quanteda.textmodels` package.
-- Uses `dfm_trim()` instead of manual column filtering for infrequent terms.
+- Uses the modern `tokens() |> dfm()` pipeline (quanteda v4+)
+- Fixes the corpus subsetting bug and `is.character()` parenthesis bug
+- Uses `dfm_trim()` for infrequent term removal
+- `wordfish_comparison()` now requires `quanteda.textmodels`
+- UK Manifestos data now accessed via `quanteda.corpora` instead of bundled
