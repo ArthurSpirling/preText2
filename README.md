@@ -125,7 +125,7 @@ Regression results (negative coefficients imply less risk):
 8              Use NGrams      -0.025 0.004
 Complete in: 11.2 seconds...
 ```
-This seems close enough to me, and I *believe* what differences remain---especially on removing infrequent terms---are a product of some `quanteda` changes in terms of how it tokenizes documents, partly documented [here](https://quanteda.io/news/news-3.3.html#changes-and-additions-3-3-0).
+This seems close enough to me, and I *believe* what differences remain---especially on removing infrequent terms---are a product of some `quanteda` changes in terms of how it tokenizes documents, partly documented [here](https://quanteda.io/news/news-3.3.html#changes-and-additions-3-3-0). I *think* the changes in the stopwords coefficient are similarly due a change in the default list `quanteda` offers. 
 
 
 ## Bug Reporting
