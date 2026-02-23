@@ -4,7 +4,12 @@ An updated R package to assess the consequences of text preprocessing decisions,
 
 This is a (semi) maintained fork of the original [preText](https://github.com/matthewjdenny/preText) package by Matthew J. Denny and Arthur Spirling. The original was archived from CRAN in 2020 due to breaking changes in quanteda v2+.
 
-(note from **Arthur Spirling**: I vibe-coded everything here, as a proof of concept in ~15 minutes in Feb 2026 using Claude Opus. It worked better than expected. I am unrepetant.)
+### Notes 
+
+From **Arthur Spirling**: I vibe-coded everything here, as a proof of concept in ~15 minutes in mid-Feb 2026 using Claude Opus. It worked better than expected. I am unrepetant.
+
+**Feb 23, 2026**: started checking the functions more carefully, by comparing with past results.  There was an error, where Claude has mistranslated an earlier function.  That's fixed now and the results from the main "Inaugural Addresses" example should be very similar to the ones from the original `preText`, differing (I think!) only due to some updates in `quanteda` in terms of the exact way it preprocesses. 
+
 
 ## Paper
 
