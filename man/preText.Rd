@@ -37,12 +37,10 @@ performed in parallel. Defaults to FALSE.}
 \value{
 A result list object with elements:
 \itemize{
-  \item \code{choices}: data.frame of preprocessing choices
-  \item \code{labels}: labels for each specification
   \item \code{preText_scores}: data.frame of preText scores
   \item \code{ranked_preText_scores}: sorted preText scores
-  \item \code{distance_matrices}: list of document distance matrices
-  \item \code{regression_results}: results of preprocessing choice regressions
+  \item \code{choices}: data.frame of preprocessing choices
+  \item \code{regression_results}: regression results data.frame
 }
 }
 \description{
@@ -52,17 +50,18 @@ This is the main wrapper function that runs the full preText procedure.
 \examples{
 \dontrun{
 library(preText2)
-data("UK_Manifestos")
+corp <- quanteda::data_corpus_inaugural
+documents <- as.character(head(corp, 10))
 preprocessed_documents <- factorial_preprocessing(
-    UK_Manifestos,
+    documents,
     use_ngrams = TRUE,
-    infrequent_term_threshold = 0.02,
+    infrequent_term_threshold = 0.2,
     verbose = TRUE)
 preText_results <- preText(
     preprocessed_documents,
-    dataset_name = "UK Manifestos",
+    dataset_name = "Inaugural Speeches",
     distance_method = "cosine",
-    num_comparisons = 50,
+    num_comparisons = 20,
     verbose = TRUE)
 }
 }

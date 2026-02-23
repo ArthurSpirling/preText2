@@ -4,18 +4,23 @@
 \alias{preText_score_plot}
 \title{preText specification plot}
 \usage{
-preText_score_plot(preText_results, remove_constant = TRUE)
+preText_score_plot(preText_results, remove_intercept = TRUE)
 }
 \arguments{
-\item{preText_results}{A list object returned by the \code{preText()} function.}
+\item{preText_results}{A results object from the \code{preText()} function.}
 
-\item{remove_constant}{Logical; remove specifications with zero score.
-Defaults to TRUE.}
+\item{remove_intercept}{Logical, not used for this plot but included for
+API compatibility.}
 }
 \value{
-A ggplot2 object.
+A ggplot object.
 }
 \description{
-Generates a dot plot of preText scores for each preprocessing
-  specification, ordered from most to least unusual.
+Creates a dot plot of preText scores for each preprocessing
+specification, ordered from most to least unusual.
+}
+\examples{
+\dontrun{
+preText_score_plot(preText_results)
+}
 }

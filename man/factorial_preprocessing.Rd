@@ -66,10 +66,11 @@ using the modern quanteda (v4+) tokens-based pipeline.
 \examples{
 \dontrun{
 library(preText2)
-data("UK_Manifestos")
+library(quanteda)
+docs <- as.character(head(data_corpus_inaugural, 20))
 preprocessed_documents <- factorial_preprocessing(
-    UK_Manifestos,
-    use_ngrams = TRUE,
+    docs,
+    use_ngrams = FALSE,
     infrequent_term_threshold = 0.02,
     verbose = TRUE)
 }

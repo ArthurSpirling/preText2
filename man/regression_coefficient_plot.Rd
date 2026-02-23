@@ -7,15 +7,20 @@
 regression_coefficient_plot(preText_results, remove_intercept = TRUE)
 }
 \arguments{
-\item{preText_results}{A list object returned by the \code{preText()} function.}
+\item{preText_results}{A results object from the \code{preText()} function.}
 
-\item{remove_intercept}{Logical; whether to remove the intercept from the
-plot. Defaults to TRUE.}
+\item{remove_intercept}{Logical indicating whether to remove the intercept
+from the plot. Defaults to TRUE.}
 }
 \value{
-A ggplot2 object.
+A ggplot object.
 }
 \description{
-Generates a coefficient plot showing the effect of each
-  preprocessing step on the preText score.
+Creates a dot plot of regression coefficients showing the
+effect of each preprocessing decision on preText scores.
+}
+\examples{
+\dontrun{
+regression_coefficient_plot(preText_results, remove_intercept = TRUE)
+}
 }

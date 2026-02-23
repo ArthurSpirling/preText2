@@ -16,27 +16,26 @@
 #' @param verbose Logical indicating whether to print progress. Defaults to TRUE.
 #' @return A result list object with elements:
 #' \itemize{
-#'   \item \code{choices}: data.frame of preprocessing choices
-#'   \item \code{labels}: labels for each specification
 #'   \item \code{preText_scores}: data.frame of preText scores
 #'   \item \code{ranked_preText_scores}: sorted preText scores
-#'   \item \code{distance_matrices}: list of document distance matrices
-#'   \item \code{regression_results}: results of preprocessing choice regressions
+#'   \item \code{choices}: data.frame of preprocessing choices
+#'   \item \code{regression_results}: regression results data.frame
 #' }
 #' @examples
 #' \dontrun{
 #' library(preText2)
-#' data("UK_Manifestos")
+#' corp <- quanteda::data_corpus_inaugural
+#' documents <- as.character(head(corp, 10))
 #' preprocessed_documents <- factorial_preprocessing(
-#'     UK_Manifestos,
+#'     documents,
 #'     use_ngrams = TRUE,
-#'     infrequent_term_threshold = 0.02,
+#'     infrequent_term_threshold = 0.2,
 #'     verbose = TRUE)
 #' preText_results <- preText(
 #'     preprocessed_documents,
-#'     dataset_name = "UK Manifestos",
+#'     dataset_name = "Inaugural Speeches",
 #'     distance_method = "cosine",
-#'     num_comparisons = 50,
+#'     num_comparisons = 20,
 #'     verbose = TRUE)
 #' }
 #' @export
@@ -50,40 +49,54 @@ preText <- function(preprocessed_documents,
 
     ptm <- proc.time()
 
-    # extract the dfm object list
+    # extract the dfm object list from preprocessed_documents
     dfm_object_list <- preprocessed_documents$dfm_list
 
     cat("Generating document distances...\n")
+    # get document distances
     scaling_results <- scaling_comparison(dfm_object_list,
                                           dimensions = 2,
                                           distance_method = distance_method,
                                           verbose = verbose,
                                           cores = cores)
 
-    cat("Calculating preText scores...\n")
+    # extract distance matrices
+    distance_matrices <- scaling_results$distance_matrices
+    cat("Generating preText Scores...\n")
+
     preText_results <- preText_test(
-        scaling_results$distance_matrices,
+        distance_matrices,
         choices = preprocessed_documents$choices,
         labels = preprocessed_documents$labels,
-        baseline_index = nrow(preprocessed_documents$choices),
+        baseline_index = length(preprocessed_documents$labels),
+        text_size = 1,
         num_comparisons = num_comparisons,
         parallel = parallel,
         cores = cores,
         verbose = verbose)
 
-    # Run regressions
-    regression_results <- preprocessing_choice_regression(
-        preText_results$preText_scores,
-        preprocessed_documents$choices)
+    preText_scores <- preText_results$dfm_level_results_unordered
+    cat("Generating regression results..\n")
 
-    t <- proc.time() - ptm
-    cat("Complete in", t[3], "seconds.\n")
+    reg_results <- preprocessing_choice_regression(
+        Y = preText_scores$preText_score,
+        choices = preprocessed_documents$choices,
+        dataset = dataset_name,
+        base_case_index = length(preprocessed_documents$labels))
 
-    return(list(choices = preprocessed_documents$choices,
-                labels = preprocessed_documents$labels,
-                preText_scores = preText_results$preText_scores,
-                ranked_preText_scores = preText_results$ranked_preText_scores,
-                distance_matrices = scaling_results$distance_matrices,
-                regression_results = regression_results,
-                dataset_name = dataset_name))
+    cat("Regression results (negative coefficients imply less risk):\n")
+    # create temporary results so we can round coefficients
+    reg_results2 <- reg_results
+    reg_results2[, 1] <- round(reg_results2[, 1], 3)
+    reg_results2[, 2] <- round(reg_results2[, 2], 3)
+    print(reg_results2[, c(3, 1, 2)])
+
+    t2 <- proc.time() - ptm
+    cat("Complete in:", t2[[3]], "seconds...\n")
+
+    # extract relevant info
+    return(list(preText_scores = preText_scores,
+                ranked_preText_scores = preText_results$dfm_level_results,
+                choices = preprocessed_documents$choices,
+                regression_results = reg_results))
 }

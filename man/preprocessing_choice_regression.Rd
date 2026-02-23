@@ -4,21 +4,33 @@
 \alias{preprocessing_choice_regression}
 \title{Preprocessing Choice Regressions}
 \usage{
-preprocessing_choice_regression(preText_scores, choices)
+preprocessing_choice_regression(
+  Y,
+  choices,
+  dataset = "Documents",
+  base_case_index = NULL
+)
 }
 \arguments{
-\item{preText_scores}{A data.frame with columns \code{labels} and
-\code{preText_score}, as returned by \code{preText_test()}.}
+\item{Y}{A numeric vector of preText scores.}
 
-\item{choices}{A data.frame of preprocessing choices, as returned by
+\item{choices}{A data.frame of preprocessing choices from
 \code{factorial_preprocessing()}.}
+
+\item{dataset}{A string name for the dataset. Defaults to "Documents".}
+
+\item{base_case_index}{The index of the base case (no preprocessing) to
+exclude from the regression. Defaults to NULL.}
 }
 \value{
-A data.frame with columns \code{Variable}, \code{Coefficient},
-  \code{SE}, \code{t_value}, \code{p_value}, \code{CI_lower}, and
-  \code{CI_upper}.
+A data.frame with columns Coefficient, SE, and Variable.
 }
 \description{
-Regresses preText scores on preprocessing choices to determine
-  which preprocessing steps have the largest effect.
+Regresses preText scores on preprocessing choices to
+determine which preprocessing decisions have the largest effects.
+}
+\examples{
+\dontrun{
+# This function is typically called inside preText().
+}
 }
