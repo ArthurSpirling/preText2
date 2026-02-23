@@ -63,6 +63,71 @@ There is a vignette for getting started [here](vignettes/getting_started_with_pr
 - `wordfish_comparison()` now requires the separate `quanteda.textmodels` package.
 - Uses `dfm_trim()` for infrequent term removal.
 
+### Comparing the versions (examples)
+
+I was able to get very similar results (i.e. replication) to the original vignette example of the Inaugural Speeches.  The relevant code is
+
+```
+# load in U.S. presidential inaugural speeches from Quanteda example data.
+corp <- data_corpus_inaugural
+# use first 10 documents for example
+documents <- corp[1:10,]
+# take a look at the document names
+print(names(documents))
+
+preprocessed_documents <- factorial_preprocessing(
+    documents,
+    use_ngrams = TRUE,
+    infrequent_term_threshold = 0.2,
+    verbose = FALSE)
+
+preText_results <- preText(
+    preprocessed_documents,
+    dataset_name = "Inaugural Speeches",
+    distance_method = "cosine",
+    num_comparisons = 20,
+    verbose = FALSE)
+```
+
+In the original `preText` this yielded: 
+
+```
+## Generating document distances...
+## Generating preText Scores...
+## Generating regression results..
+## Regression results (negative coefficients imply less risk):
+##                  Variable Coefficient    SE
+## 1               Intercept       0.117 0.004
+## 2      Remove Punctuation       0.020 0.003
+## 3          Remove Numbers       0.001 0.003
+## 4               Lowercase      -0.010 0.003
+## 5                Stemming      -0.004 0.003
+## 6        Remove Stopwords      -0.022 0.003
+## 7 Remove Infrequent Terms       0.000 0.003
+## 8              Use NGrams      -0.028 0.003
+## Complete in: 12.859 seconds...
+```
+In `pretext2` this yields
+
+```
+Generating document distances...
+Generating preText Scores...
+Generating regression results..
+Regression results (negative coefficients imply less risk):
+                 Variable Coefficient    SE
+1               Intercept       0.112 0.006
+2      Remove Punctuation       0.020 0.004
+3          Remove Numbers       0.002 0.004
+4               Lowercase       0.000 0.004
+5                Stemming      -0.002 0.004
+6        Remove Stopwords      -0.033 0.004
+7 Remove Infrequent Terms      -0.010 0.004
+8              Use NGrams      -0.025 0.004
+Complete in: 11.2 seconds...
+```
+This seems close enough to me. 
+
+
 ## Bug Reporting
 
 Please report bugs via [GitHub Issues](https://github.com/ArthurSpirling/preText2/issues).
