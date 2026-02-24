@@ -126,7 +126,7 @@ Regression results (negative coefficients imply less risk):
 8              Use NGrams      -0.027 0.004
 Complete in: 11.28 seconds...
 ```
-Not perfect, but close. I *believe* what differences remain---especially on removing infrequent terms and lowercase---are a product of some `quanteda` changes in terms of how it tokenizes documents, partly documented [here](https://quanteda.io/news/news-3.3.html#changes-and-additions-3-3-0). 
+Not perfect, but close. I *believe* what differences remain---especially on removing infrequent terms and lowercase---are a product of some `quanteda` changes in terms of how it tokenizes documents, partly documented [here](https://quanteda.io/news/news-3.3.html#changes-and-additions-3-3-0). I think one could force legacy behavior, but maybe that's not worth it given modern standards of preprocessing. 
 
 
 ## Bug Reporting
