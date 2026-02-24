@@ -117,15 +117,15 @@ Generating preText Scores...
 Generating regression results..
 Regression results (negative coefficients imply less risk):
                  Variable Coefficient    SE
-1               Intercept       0.111 0.006
-2      Remove Punctuation       0.018 0.004
+1               Intercept       0.110 0.006
+2      Remove Punctuation       0.019 0.004
 3          Remove Numbers       0.002 0.004
 4               Lowercase       0.000 0.004
 5                Stemming      -0.002 0.004
 6        Remove Stopwords      -0.028 0.004
 7 Remove Infrequent Terms      -0.009 0.004
-8              Use NGrams      -0.027 0.004
-Complete in: 11.28 seconds...
+8              Use NGrams      -0.026 0.004
+Complete in: 13.57 seconds...
 ```
 Not perfect, but close. I *believe* what differences remain---especially on removing infrequent terms and lowercase---are a product of some `quanteda` changes in terms of how it tokenizes documents, partly documented [here](https://quanteda.io/news/news-3.3.html#changes-and-additions-3-3-0). I think one could force legacy behavior, but maybe that's not worth it given modern standards of preprocessing. 
 
