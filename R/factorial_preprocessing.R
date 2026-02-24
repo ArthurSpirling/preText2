@@ -224,11 +224,9 @@ build_dfm <- function(text,
                       language = "english",
                       verbose = FALSE) {
 
-    # Match original preText behavior: when using ngrams, pad removals so we don't
-    # create "bridged" ngrams across removed tokens (e.g., stopwords).
     padding <- isTRUE(choices$use_ngrams)
 
-    # Step 1: Tokenize with punctuation and number options
+    # Step 1: Tokenize
     toks <- quanteda::tokens(
         text,
         remove_punct   = choices$removePunctuation,
@@ -236,33 +234,33 @@ build_dfm <- function(text,
         padding        = padding
     )
 
-    # Step 4: Stem (use explicit language, like preText did)
+    # Step 2: Lowercase BEFORE stemming (important!)
+    if (choices$lowercase) {
+        toks <- quanteda::tokens_tolower(toks, keep_acronyms = FALSE)
+    }
+
+    # Step 3: Stem
     if (choices$stem) {
         toks <- quanteda::tokens_wordstem(toks, language = language)
     }
 
-    # Step 5: N-grams (1:3 if requested)
+    # Step 4: N-grams
     if (choices$use_ngrams) {
         toks <- quanteda::tokens_ngrams(toks, n = 1:3)
     }
 
-    # Step 6: Build DFM
+    # Step 5: Build DFM
     current_dfm <- quanteda::dfm(toks)
 
-
-    # Lowercase at the DFM stage (legacy preText-compatible behavior)
-    if (choices$lowercase) {
-        current_dfm <- quanteda::dfm_tolower(current_dfm)
-    }
-
-    # Remove stopwords at the DFM stage (legacy preText-compatible behavior)
+    # Step 6: Remove stopwords at the DFM stage (keep this)
     if (choices$removeStopwords) {
         current_dfm <- quanteda::dfm_remove(
             current_dfm,
             pattern = quanteda::stopwords(language = language)
         )
     }
-    # Step 7: Remove infrequent terms if requested
+
+    # Step 7: Remove infrequent terms
     if (choices$infrequent_terms) {
         current_dfm <- remove_infrequent_terms(
             dfm_object = current_dfm,
