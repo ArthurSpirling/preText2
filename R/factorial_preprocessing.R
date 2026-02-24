@@ -12,6 +12,8 @@
 #' @param infrequent_term_threshold A proportion threshold at which
 #'     infrequent terms are to be filtered. Defaults to 0.01 (terms
 #'     that appear in less than 1 percent of documents).
+#' @param language Language passed to quanteda for stopword removal and stemming.
+#'     Defaults to \"english\" to mirror the original preText behavior.
 #' @param parallel Logical indicating whether factorial preprocessing
 #'     should be performed in parallel. Defaults to FALSE.
 #' @param cores Defaults to 1, can be set to any number less than or
@@ -48,6 +50,7 @@
 factorial_preprocessing <- function(text,
                                     use_ngrams = TRUE,
                                     infrequent_term_threshold = 0.01,
+                                    language = "english",
                                     parallel = FALSE,
                                     cores = 1,
                                     intermediate_directory = NULL,
@@ -73,8 +76,8 @@ factorial_preprocessing <- function(text,
         text <- quanteda::corpus(text)
     }
     if (!quanteda::is.corpus(text)) {
-        stop("You must provide either a character vector of strings (one per document) or a quanteda corpus object.")
-    }
+  stop("You must provide either a character vector of strings (one per document) or a quanteda corpus object.")
+}
 
     ndocs <- quanteda::ndoc(text)
 
@@ -136,11 +139,13 @@ factorial_preprocessing <- function(text,
             cl = cl,
             x = rows_to_preprocess,
             fun = function(i, choices, text, infrequent_term_threshold,
+                           language,
                            intermediate_directory) {
                 current_dfm <- preText2:::build_dfm(
                     text = text,
                     choices = choices[i, ],
                     infrequent_term_threshold = infrequent_term_threshold,
+                    language = language,
                     verbose = FALSE)
                 if (!is.null(intermediate_directory)) {
                     save(current_dfm,
@@ -152,6 +157,7 @@ factorial_preprocessing <- function(text,
             choices = choices,
             text = text,
             infrequent_term_threshold = infrequent_term_threshold,
+            language = language,
             intermediate_directory = intermediate_directory)
 
         parallel::stopCluster(cl)
@@ -166,6 +172,7 @@ factorial_preprocessing <- function(text,
                 text = text,
                 choices = choices[i, ],
                 infrequent_term_threshold = infrequent_term_threshold,
+                language = language,
                 verbose = verbose)
 
             if (!is.null(intermediate_directory)) {
@@ -211,26 +218,27 @@ factorial_preprocessing <- function(text,
 #' @param verbose Logical for printing progress.
 #' @return A quanteda dfm object.
 #' @keywords internal
-build_dfm <- function(text, choices, infrequent_term_threshold, verbose = FALSE) {
+build_dfm <- function(text,
+                      choices,
+                      infrequent_term_threshold,
+                      language = "english",
+                      verbose = FALSE) {
+
+    # Match original preText behavior: when using ngrams, pad removals so we don't
+    # create "bridged" ngrams across removed tokens (e.g., stopwords).
+    padding <- isTRUE(choices$use_ngrams)
 
     # Step 1: Tokenize with punctuation and number options
-    toks <- quanteda::tokens(text,
-                             remove_punct = choices$removePunctuation,
-                             remove_numbers = choices$removeNumbers)
+    toks <- quanteda::tokens(
+        text,
+        remove_punct   = choices$removePunctuation,
+        remove_numbers = choices$removeNumbers,
+        padding        = padding
+    )
 
-    # Step 2: Lowercase
-    if (choices$lowercase) {
-        toks <- quanteda::tokens_tolower(toks)
-    }
-
-    # Step 3: Remove stopwords
-    if (choices$removeStopwords) {
-        toks <- quanteda::tokens_remove(toks, quanteda::stopwords("en"))
-    }
-
-    # Step 4: Stem
+    # Step 4: Stem (use explicit language, like preText did)
     if (choices$stem) {
-        toks <- quanteda::tokens_wordstem(toks)
+        toks <- quanteda::tokens_wordstem(toks, language = language)
     }
 
     # Step 5: N-grams (1:3 if requested)
@@ -241,12 +249,26 @@ build_dfm <- function(text, choices, infrequent_term_threshold, verbose = FALSE)
     # Step 6: Build DFM
     current_dfm <- quanteda::dfm(toks)
 
+
+    # Lowercase at the DFM stage (legacy preText-compatible behavior)
+    if (choices$lowercase) {
+        current_dfm <- quanteda::dfm_tolower(current_dfm)
+    }
+
+    # Remove stopwords at the DFM stage (legacy preText-compatible behavior)
+    if (choices$removeStopwords) {
+        current_dfm <- quanteda::dfm_remove(
+            current_dfm,
+            pattern = quanteda::stopwords(language = language)
+        )
+    }
     # Step 7: Remove infrequent terms if requested
     if (choices$infrequent_terms) {
         current_dfm <- remove_infrequent_terms(
             dfm_object = current_dfm,
             proportion_threshold = infrequent_term_threshold,
-            verbose = verbose)
+            verbose = verbose
+        )
     }
 
     return(current_dfm)
