@@ -76,18 +76,19 @@ documents <- corp[1:10,]
 print(names(documents))
 
 preprocessed_documents <- factorial_preprocessing(
-    documents,
-    use_ngrams = TRUE,
-    infrequent_term_threshold = 0.2,
-    verbose = FALSE)
-
-preprocessed_documents <- factorial_preprocessing(
    documents,
    use_ngrams = TRUE,
    infrequent_term_threshold = 0.2,
    language = "english",
    verbose = FALSE
  )
+
+preText_results <- preText(
+    preprocessed_documents,
+    dataset_name = "Inaugural Speeches",
+    distance_method = "cosine",
+    num_comparisons = 20,
+    verbose = FALSE)
 ```
 
 In the original `preText` this yielded: 
